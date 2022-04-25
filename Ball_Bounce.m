@@ -66,5 +66,5 @@ title('Affect of Angle on Max Height of Ball')
 legend('Does not Clear Obstacle','Clears Obstacle');
 set(gca,'FontSize',14)
 %% Print out a summary of the data
-fprintf("With a COR of e=%f, this plate/ball combination can clear an obstacle %fm away\nand %fm high when the plate angle is between %.1f-%.1f degrees\n",E,obj_x,obj_y, min(alpha(logical(cleared))), max(alpha(logical(cleared))))
-fprintf("The best angle to clear the obstacle & maximize height is %.1f degrees with a height of %fm\n", min(alpha(logical(cleared))), max(max_height(logical(cleared))))
+fprintf("With a COR of e=%f, this plate/ball combination can clear an obstacle %fm away\nand %fm high when the plate angle is between %.1f-%.1f degrees.\n",E,obj_x,obj_y, min(alpha(logical(cleared))), max(alpha(logical(cleared))))
+fprintf("The best angle to clear the obstacle & maximize height is %.1f degrees with a height of %fm.\n", min(alpha(logical(cleared))), max(max_height(logical(cleared))))
