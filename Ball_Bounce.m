@@ -6,7 +6,7 @@ E = 0.894153; % COR of ball/plate
 h = 0.548; % height at which ball is droped from above impact point
 obj_x = 0.456; %x length of the object placement from impact
 obj_y =0.062; %y height of the object placement from impact
-alpha = 0:0.1:90; %vary the plate angle from flat to vertical
+alpha = 0:1:90; %vary the plate angle from flat to vertical
 
 % Setup parameters to model projectile with drag
 r = 0.0065; % Radius of ball
