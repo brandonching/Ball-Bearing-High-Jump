@@ -5,8 +5,8 @@ clc; clear; close all;
 E = 0.894153; % COR of ball/plate
 h = 0.548; % height at which ball is droped from above impact point
 obj_x = 0.456; %x length of the object placement from impact
-obj_y =0.062; %y height of the object placement from impact
-alpha = 0:1:90; %vary the plate angle from flat to vertical
+obj_y = 0.062; %y height of the object placement from impact
+alpha = 7.72; %vary the plate angle from flat to vertical
 
 % Setup parameters to model projectile with drag
 r = 0.0065; % Radius of ball
@@ -18,16 +18,16 @@ rho = 1.01; % rho, air density of denver, kg/m^3
 y0 = 0; % y, initial vertical position, m
 x0 = 0; % x, initial horizontal position, m
 
+%% Solve and Plot Projectile Motion for various angles of alpha
 tiledlayout(1,2);
 nexttile
 hold on
 max_height = [];
 cleared =[];
-%% Solve and Plot Projectile Motion for various angles of alpha
 
 % iterate through all the angles, alpha for the plate
 for a = alpha
-    v = (E * cosd(a) * sqrt(2*g*h)) / (sind(acotd(E*tand(a)))); % v, initial velocity
+    v = (E * cosd(a) * sqrt(2*g*h)) / (sind(atand(E*cotd(a)))); % v, initial velocity
     angle = atand(E*cotd(a)) - a; % angle, launch angle
     
     [x,y,vx,vy,t] = projectile_motion_drag(v,angle,g,m,A,cd,rho,y0,x0);
