@@ -4,7 +4,7 @@
 clc; clear; close all;
 
 %% Initial Setup
-E = 0.894153; % COR of ball/plate
+e = [0.894153; 0.809083]; % COR of ball/plate
 h = 0.548; % height at which ball is droped from above impact point
 obj_x = 0.456; %x length of the object placement from impact
 obj_y = 0.062; %y height of the object placement from impact
@@ -15,8 +15,8 @@ alpha = 0:0.01:90; %vary the plate angle from flat to vertical
 
 %% Determine whether or not the ball will clear the obstacle
 % Solve for the exit velocity from the plate and the corrosponging angle
-v_2 = (E .* cosd(alpha) * sqrt(2*g*h)) ./ (sind(atand(E*cotd(alpha))));
-angle = atand(E*cotd(alpha)) - alpha;
+v_2 = (e .* cosd(alpha) * sqrt(2*g*h)) ./ (sind(atand(e*cotd(alpha))));
+angle = atand(e*cotd(alpha)) - alpha;
 
 % Determine whether or not the ball clears the obstacle
 y_clear = -((g*obj_x^2) ./ (2 * v_2.^2 .* cosd(angle).^2)) + (obj_x .* tand(angle));
@@ -24,33 +24,35 @@ cleared = y_clear > obj_y;
 
 figure % New figure of angle vs how much the ball clears the obstacle
 plot(alpha, y_clear, 'r', 'LineWidth' , 2); hold on;
-plot(alpha(cleared),y_clear(cleared), 'g', 'LineWidth' , 2); hold off;
+plot(alpha(cleared(1,:)),y_clear(1,cleared(1,:)), 'g', 'LineWidth' , 2); 
+plot(alpha(cleared(2,:)),y_clear(2,cleared(2,:)), 'g', 'LineWidth' , 2); hold off;
 % Label Plot and Define Axises
 xlabel("Plate Angle (deg)")
 ylabel("Vertical Clearance Above Obstacle (m)")
 title("Affect of Angle on Clearance Above Obstacle")
-legend('Does not Clear Obstacle','Clears Obstacle');
-axis([0 90 -0.5 0.5])
-
+legend('Does not Clear Obstacle','','Clears Obstacle');
+axis([0 90 -0.4 0.4])
+text([15 15],y_clear(:,15),{'\leftarrow Aluminium/Nylon','\leftarrow Acrylic/Delrin'})
 %% Solve for the Max Height of the Ball's Trajectory
 % Max height of the ball's trajectory for each plate angle
 h_max = (v_2.^2 .* sind(angle).^2) ./ (2*g);
 
 figure % New figure comparing plate angle with max height
 plot(alpha, h_max, 'r', 'LineWidth' , 2); hold on; % Failed Angles
-plot(alpha(cleared), h_max(cleared), 'g', 'LineWidth' , 2); hold off; % Passed Angles
+plot(alpha(cleared(1,:)),h_max(1,cleared(1,:)), 'g', 'LineWidth' , 2); 
+plot(alpha(cleared(2,:)),h_max(2,cleared(2,:)), 'g', 'LineWidth' , 2); hold off;
 % Label Plot and Define Axises
 xlabel("Plate Angle (deg)")
 ylabel("Max Height (m)")
 title("Max Height of Ball Durring Bounce")
-legend('Does not Clear Obstacle','Clears Obstacle','Location', 'NW');
-
+legend('Does not Clear Obstacle','','Clears Obstacle','Location', 'NW');
+text([10 10],h_max(:,10),{'\leftarrow Aluminium/Nylon','\leftarrow Acrylic/Delrin'})
 %% Plot Best Path and acutal
 % Find the best plate angle, alpha, and the corrosponging exit velocity and
 % angle for simulated trajectory
-best_alpha = min(alpha(logical(cleared)));
-best_v_2 = v_2(find(alpha==best_alpha));
-best_angle = angle(find(alpha==best_alpha)); 
+best_alpha = min(alpha(logical(cleared(1,:))));
+best_v_2 = v_2(1,(find(alpha==best_alpha)));
+best_angle = angle(1,(find(alpha==best_alpha))); 
 % Create a time array from 0 to time of impact, with 1000 data points
 t_f = (2 * best_v_2 * sind(best_angle))/g;
 t = linspace(0,t_f,1000); 
@@ -75,5 +77,5 @@ legend('Predicted Trajectory','Actual Trajectory', 'Obstacle', 'Location', 'NW')
 axis([0 0.5 0 0.5])
 
 %% Print out a summary of the data
-fprintf("With a COR of e=%f, this plate/ball combination can clear an obstacle %.3fm away and %.3fm high when the plate angle is between %.2f-%.2f degrees.\n",E,obj_x,obj_y, min(alpha(logical(cleared))), max(alpha(logical(cleared))))
-fprintf("The best angle to clear the obstacle & maximize height is %.2f degrees with a height of %fm.\n", best_alpha, max(h_max(logical(cleared))))
+fprintf("With a COR of e=%f, this plate/ball combination can clear an obstacle %.3fm away and %.3fm high when the plate angle is between %.2f-%.2f degrees.\n",e(1),obj_x,obj_y, min(alpha(logical(cleared(1,:)))), max(alpha(logical(cleared(1,:)))))
+fprintf("The best angle to clear the obstacle & maximize height is %.2f degrees with a height of %fm.\n", best_alpha, max(h_max(1,(logical(cleared(1,:))))))

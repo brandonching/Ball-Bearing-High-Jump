@@ -4,24 +4,28 @@
 clc; clear; close all;
 
 %% Initial Setup
-E = 0.894153; % COR of ball/plate
+e = [0.894153; 0.809083]; % COR of ball/plate
 h = 0.548; % height at which ball is droped from above impact point
 obj_x = 0.456; %x length of the object placement from impact
 obj_y = 0.062; %y height of the object placement from impact
 g = 9.81; % g, gravity, m/s^2
 y0 = 0; % y, initial vertical position, m
 x0 = 0; % x, initial horizontal position, m
-alpha = 0:0.01:90; %vary the plate angle from flat to vertical
+alpha = 0:1:90; %vary the plate angle from flat to vertical
 
 %% Determine whether or not the ball will clear the obstacle
-v_2 = (E .* cosd(alpha) * sqrt(2*g*h)) ./ (sind(atand(E*cotd(alpha)))); % v, initial velocity
-angle = atand(E*cotd(alpha)) - alpha; % angle, launch angle
+% Solve for the exit velocity from the plate and the corrosponging angle
+v_2 = (e .* cosd(alpha) * sqrt(2*g*h)) ./ (sind(atand(e*cotd(alpha))));
+angle = atand(e*cotd(alpha)) - alpha;
+
+% Determine whether or not the ball clears the obstacle
 y_clear = -((g*obj_x^2) ./ (2 * v_2.^2 .* cosd(angle).^2)) + (obj_x .* tand(angle));
 cleared = y_clear > obj_y;
 
-figure % New figure
+figure % New figure of angle vs how much the ball clears the obstacle
 plot(alpha, y_clear, 'r', 'LineWidth' , 2); hold on;
-plot(alpha(cleared),y_clear(cleared), 'g', 'LineWidth' , 2); hold off;
+plot([alpha ](cleared),y_clear(cleared), 'g', 'LineWidth' , 2); hold off;
+% Label Plot and Define Axises
 xlabel("Plate Angle (deg)")
 ylabel("Vertical Clearance Above Obstacle (m)")
 title("Affect of Angle on Clearance Above Obstacle")
@@ -34,7 +38,7 @@ h_max = (v_2.^2 .* sind(angle).^2) ./ (2*g);
 
 figure % New figure comparing plate angle with max height
 plot(alpha, h_max, 'r', 'LineWidth' , 2); hold on; % Failed Angles
-plot(alpha(cleared),h_max(cleared), 'g', 'LineWidth' , 2); hold off; % Passed Angles
+plot(alpha(cleared), h_max(cleared), 'g', 'LineWidth' , 2); hold off; % Passed Angles
 % Label Plot and Define Axises
 xlabel("Plate Angle (deg)")
 ylabel("Max Height (m)")
@@ -71,5 +75,5 @@ legend('Predicted Trajectory','Actual Trajectory', 'Obstacle', 'Location', 'NW')
 axis([0 0.5 0 0.5])
 
 %% Print out a summary of the data
-fprintf("With a COR of e=%f, this plate/ball combination can clear an obstacle %.3fm away and %.3fm high when the plate angle is between %.2f-%.2f degrees.\n",E,obj_x,obj_y, min(alpha(logical(cleared))), max(alpha(logical(cleared))))
+fprintf("With a COR of e=%f, this plate/ball combination can clear an obstacle %.3fm away and %.3fm high when the plate angle is between %.2f-%.2f degrees.\n",e,obj_x,obj_y, min(alpha(logical(cleared))), max(alpha(logical(cleared))))
 fprintf("The best angle to clear the obstacle & maximize height is %.2f degrees with a height of %fm.\n", best_alpha, max(h_max(logical(cleared))))
